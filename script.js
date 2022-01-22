@@ -51,7 +51,6 @@ class Player {
   } // update
 
   draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (mouse.click) {
       ctx.lineWidth = 0.2;
       ctx.beginPath();
@@ -74,6 +73,7 @@ const player = new Player();
 
 // Amination Loop
 const animate = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.update();
   player.draw();
 
