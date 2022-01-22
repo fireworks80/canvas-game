@@ -1,6 +1,6 @@
 # 캔버스 충돌 게임
 
-![preview](./anim.gif);
+![preview](./anim.gif)
 
 ## 개선 할 것
 
