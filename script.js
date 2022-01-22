@@ -17,15 +17,22 @@ const mouse = {
   click: false,
 };
 
-canvas.addEventListener('mousedown', (e) => {
+const canvasActiveEvent = (e) => {
+  const currentX = e.x ?? e.pageX;
+  const currentY = e.y ?? e.pageY;
   mouse.click = true;
-  mouse.x = e.x - canvasPosition.left;
-  mouse.y = e.y - canvasPosition.top;
-});
+  mouse.x = currentX - canvasPosition.left;
+  mouse.y = currentY - canvasPosition.top;
+};
 
-canvas.addEventListener('mouseup', () => {
+const canvasDeactiveEvent = () => {
   mouse.click = false;
-});
+};
+
+canvas.addEventListener('mousedown', canvasActiveEvent);
+canvas.addEventListener('touchend', canvasActiveEvent);
+canvas.addEventListener('mouseup', canvasDeactiveEvent);
+canvas.addEventListener('touchcancel', canvasDeactiveEvent);
 
 // Playser
 class Player {
@@ -81,11 +88,15 @@ class Bubble {
   }
 
   update() {
+    const dx = this.x - player.x;
+    const dy = this.y - player.y;
+
     this.y -= this.speed;
+    this.distance = Math.sqrt(dx * dx + dy * dy);
   } // update
 
   draw() {
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = '#e78a65';
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
@@ -112,6 +123,14 @@ const handleBubbles = () => {
     }
   };
 
+  const bubbleCollision = (bubble, idx) => {
+    if (bubble.distance < bubble.radius + player.radius) {
+      console.log('collision');
+      bubblesArray.splice(idx, 1);
+      score += 1;
+    }
+  };
+
   if (gameFrame % 50 === 0) {
     bubblesArray.push(new Bubble());
     console.log(bubblesArray.length);
@@ -119,6 +138,7 @@ const handleBubbles = () => {
 
   bubbleLoop(bubbleAnim);
   bubbleLoop(bubblesArrOptimise);
+  bubbleLoop(bubbleCollision);
 };
 
 // Amination Loop
