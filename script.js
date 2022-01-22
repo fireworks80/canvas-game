@@ -42,7 +42,7 @@ class Player {
   }
 
   update() {
-    const SPEED = 30;
+    const SPEED = 10;
     const dx = this.x - mouse.x;
     const dy = this.y - mouse.y;
 
@@ -128,6 +128,9 @@ const animate = () => {
 
   player.update();
   player.draw();
+
+  ctx.fillStyle = 'black';
+  ctx.fillText(`score: ${score}`, 10, 50);
 
   gameFrame += 1;
   requestAnimationFrame(animate);
