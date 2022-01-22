@@ -74,7 +74,7 @@ const bubblesArray = [];
 class Bubble {
   constructor() {
     this.x = Math.random() * canvas.width;
-    this.y = canvas.height + Math.random() * canvas.height;
+    this.y = canvas.height + 100;
     this.radius = 50;
     this.speed = Math.random() * 5 * 1;
     this.distance;
@@ -94,20 +94,31 @@ class Bubble {
   }
 }
 
+const bubbleLoop = (cb) => {
+  for (let i = 0; i < bubblesArray.length; i += 1) {
+    cb(bubblesArray[i], i);
+  } // for
+};
+
 const handleBubbles = () => {
+  const bubbleAnim = (bubble, idx) => {
+    bubble.update();
+    bubble.draw();
+  };
+
+  const bubblesArrOptimise = (bubble, idx) => {
+    if (bubble.y < 0 - bubble.radius * 2) {
+      bubblesArray.splice(idx, 1);
+    }
+  };
+
   if (gameFrame % 50 === 0) {
     bubblesArray.push(new Bubble());
     console.log(bubblesArray.length);
   } // if
 
-  for (let i = 0; i < bubblesArray.length; i += 1) {
-    bubblesArray[i].update();
-    bubblesArray[i].draw();
-
-    if (bubblesArray[i].y < 0) {
-      bubblesArray.splice(i, 1);
-    }
-  } // for
+  bubbleLoop(bubbleAnim);
+  bubbleLoop(bubblesArrOptimise);
 };
 
 // Amination Loop
