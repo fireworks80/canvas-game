@@ -1,0 +1,131 @@
+const canvas = document.querySelector('#canvas');
+const ctx = canvas.getContext('2d');
+
+const CANVAS_WIDTH = (canvas.width = 600);
+const CANVAS_HEIGHT = (canvas.height = 600);
+
+const playerImage = new Image();
+
+playerImage.src = './shadow_dog.png';
+
+const spriteWidth = 575; // image width / colum len
+const spriteHeight = 523; // image height / row len
+let gameFrame = 0;
+const staggerFrames = 5;
+let playState = 'idle';
+const spriteAnimations = {};
+const animationStates = [
+  {
+    name: 'idle',
+    frames: 7,
+  },
+  {
+    name: 'jump',
+    frames: 7,
+  },
+  {
+    name: 'fall',
+    frames: 7,
+  },
+  {
+    name: 'run',
+    frames: 9,
+  },
+  {
+    name: 'dizzy',
+    frames: 11,
+  },
+  {
+    name: 'sit',
+    frames: 5,
+  },
+  {
+    name: 'roll',
+    frames: 7,
+  },
+  {
+    name: 'bite',
+    frames: 7,
+  },
+  {
+    name: 'ko',
+    frames: 12,
+  },
+  {
+    name: 'gethit',
+    frames: 4,
+  },
+];
+
+const recursive = (() => {
+  const _recursive = (idx, spriteWidth, spriteHeight, frames, count, acc) =>
+    count < frames
+      ? _recursive(idx, spriteWidth, spriteHeight, frames, count + 1, [
+          ...acc,
+          {
+            x: count * spriteWidth,
+            y: idx * spriteHeight,
+          },
+        ])
+      : acc;
+  return (idx, spriteWidth, spriteHeight, frames) => _recursive(idx, spriteWidth, spriteHeight, frames, 0, []);
+})();
+
+animationStates.forEach((state, idx) => {
+  spriteAnimations[state.name] = { loc: recursive(idx, spriteWidth, spriteHeight, state.frames) };
+});
+
+// animationStates.forEach((state, idx) => {
+//   const frames = {
+//     loc: [],
+//   };
+
+//   for (let i = 0; i < state.frames; i += 1) {
+//     const x = i * spriteWidth;
+//     const y = idx * spriteHeight;
+
+//     frames.loc.push({ x, y });
+//   } // for
+
+//   spriteAnimations[state.name] = frames;
+
+//   return frames;
+// });
+
+// [idl: loc: [], jump: loc: []]
+
+// console.log(spriteAnimations);
+
+const animate = () => {
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+  let position = Math.floor(gameFrame / staggerFrames) % spriteAnimations[playState].loc.length;
+  let frameX = spriteWidth * position;
+  let frameY = spriteAnimations[playState].loc[position].y;
+  // ctx.fillRect(0, 50, 100, 100);
+  // void ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+  ctx.drawImage(playerImage, frameX, frameY, spriteWidth, spriteHeight, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+  gameFrame += 1;
+  requestAnimationFrame(animate);
+};
+
+animate();
+
+const selectEl = document.querySelector('#animation');
+const fragment = new DocumentFragment();
+window.addEventListener('DOMContentLoaded', () => {
+  const result = animationStates.forEach((status, idx) => {
+    const option = document.createElement('option');
+    option.value = status.name;
+    option.textContent = status.name;
+    fragment.appendChild(option);
+  });
+
+  selectEl.appendChild(fragment);
+});
+
+selectEl.addEventListener('change', (e) => {
+  // console.log(e.target.value);
+  playState = e.target.value;
+});

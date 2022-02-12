@@ -1,0 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
+#canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  border: 5px solid;
+  transform: translate3d(-50%, -50%, 0);
+}
