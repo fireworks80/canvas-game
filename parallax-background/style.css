@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+}
+
+.current-speed {
+  color: #fff;
+}
+
+.slider {
+  width: 100%;
+}
+
+#canvas {
+  display: block;
+  margin: 0 auto;
+  width: 800px;
+  height: 700px;
+  border: 3px solid #fff;
+}
